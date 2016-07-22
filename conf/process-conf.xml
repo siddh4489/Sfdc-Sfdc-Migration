@@ -1,0 +1,113 @@
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="LoadAccounts"
+   class="com.salesforce.dataloader.process.ProcessRunner"
+   singleton="false">
+        <description>Account CSV 'upsert'.</description>
+        <property name="name" value="LoadAccounts"/>
+        <property name="configOverrideMap">
+            <map>
+                <!--  <entry key="sfdc.debugMessagesFile" value="status/LoadAccounts.log"/> -->
+                <entry key="sfdc.externalIdField" value="Akritiv__Account_Key__c"/>
+                <entry key="sfdc.entity" value="Account"/>
+                <entry key="process.mappingFile" value="conf/AccountsMapping.sdl"/>
+                <entry key="dataAccess.name" value="data/Accounts.csv"/>
+            </map>
+        </property>
+    </bean>
+	
+    <bean id="LoadContacts"
+   class="com.salesforce.dataloader.process.ProcessRunner"
+   singleton="false">
+        <description>Contact CSV 'upsert'.</description>
+        <property name="name" value="LoadContacts"/>
+        <property name="configOverrideMap">
+            <map>
+                <!--  <entry key="sfdc.debugMessagesFile" value="status/LoadContacts.log"/> -->
+                <entry key="sfdc.externalIdField" value="Id"/>
+                <entry key="sfdc.entity" value="Contact"/>
+                <entry key="process.mappingFile" value="conf/ContactsMapping.sdl"/>
+                <entry key="dataAccess.name" value="data/Contacts.csv"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="LoadTransactions"
+          class="com.salesforce.dataloader.process.ProcessRunner"
+          singleton="false">
+        <description>Transaction CSV 'upsert'.</description>
+        <property name="name" value="LoadTransactions"/>
+        <property name="configOverrideMap">
+            <map>
+                <!--   <entry key="sfdc.debugMessagesFile" value="status/LoadTransactions.log"/> -->
+                <entry key="sfdc.externalIdField" value="Akritiv__Transaction_Key__c"/>
+                <entry key="sfdc.entity" value="Akritiv__Transaction__c"/>
+                <entry key="process.mappingFile" value="conf/TransactionsMapping.sdl"/>
+                <entry key="dataAccess.name" value="data/Customer_Open_Items.csv"/>
+            </map>
+        </property>
+    </bean>
+
+
+    <bean id="LoadBatchInfo"
+   class="com.salesforce.dataloader.process.ProcessRunner"
+   singleton="false">
+        <description>Mark end of dataload.</description>
+        <property name="name" value="LoadDataLoadBatch"/>
+        <property name="configOverrideMap">
+            <map>
+                <!-- <entry key="sfdc.debugMessagesFile" value="status/LoadBatch.log"/> -->
+                <entry key="sfdc.externalIdField" value="akritiv__Batch_Number__c"/>
+                <entry key="sfdc.entity" value="akritiv__Data_Load_Batch__c"/>
+                <entry key="process.mappingFile" value="conf/DataLoadBatchMapping.sdl"/>
+                <entry key="dataAccess.name" value="data/DataLoadBatch.csv"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="Akritiv"
+   class="com.akritiv.loader.AkritivBean"
+   singleton="false">
+        <description>Akritiv Loader Bean</description>
+        <property name="name" value="Akritiv"/>
+        <property name="notificationSubscribers" value="siddh4489@gmail.com"/>
+        <property name="processSequence" value="LoadTransactions"/>
+        <property name="organizationName" value="BT"/>
+        <property name="useAkritivSmtp" value="NO"/>
+        <property name="mailTransportProtocol" value="smtp"/>
+        <property name="mailHost" value="smtp.gmail.com"/>
+        <property name="mailSmtpAuth" value="true"/>
+        <property name="mailSmtpPort" value="465"/>
+        <property name="mailSmtpSocketFactoryPort" value="465"/>
+        <property name="mailSmtpSocketFactoryClass" value="javax.net.ssl.SSLSocketFactory"/>
+        <property name="mailSmtpSocketFactoryFallback" value="false"/>
+        <property name="mailSmtpQuitwait" value="false"/>
+        <property name="mailSmtpStartTLS" value="true"/>
+        <property name="myEmail" value="nitin.munjani@gmail.com"/>
+        <property name="myPassword" value=""/>
+        <property name="useSSL" value="true"/>
+        <property name="batchInfoProcessName" value="LoadBatchInfo"/>
+        <property name="loadTypeHeader" value="LOAD TYPE"/>
+        <property name="resultHeader" value="RESULT"/>
+        <property name="sdlLogFileName" value="akritivloader.log"/>
+        <property name="sdlOutFileName" value="sdl_out.log"/>      
+        <property name="ignoreErrorsUpto" value="20"/>
+	<property name="notifySucessfullLoad" value="NO"/>
+        <property name="accountsFileKeyword" value=""/>
+        <property name="transactionsFileKeyword" value=""/>
+        <property name="generateBatchFile" value="no"/>
+        <property name="batchRunAging" value="yes"/>
+        <property name="batchLoadType" value="full"/>
+        <property name="batchSourceRefColumn" value="0"/>
+        <property name="batchNumberRefColumn" value="1"/>
+	<property name="ftpServerName" value="ftp.mydomain.com"/>
+        <property name="ftpUserName" value="ftpUserName"/>
+        <property name="ftpPassword" value=""/>
+        <property name="ftpDir" value="/FTPDir"/>
+        <property name="extractFromCompressedFiles" value="no"/>
+        <property name="compressedFileExtention" value=".zip"/>
+        <property name="formateDataFile" value="yes"/>
+        <property name="autoRunDataLoad" value="no"/>        
+        <property name="rawDataFileSeparator" value="|"/>        
+        <property name="deleteDataFilesOnCompletion" value="yes"/>
+    </bean>
+</beans>
